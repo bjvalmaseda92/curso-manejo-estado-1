@@ -2,41 +2,54 @@ import React from "react";
 
 const SECURITY_CODE = "paradigma";
 function UseState() {
-  const [value, setValue] = React.useState("");
-  const [error, setError] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
+  const [state, setState] = React.useState({
+    error: false,
+    loading: false,
+    value: "",
+  });
 
   React.useEffect(() => {
     console.log("iniciando useEffect");
-    if (loading) {
+    if (state.loading) {
       setTimeout(() => {
-        if (value !== SECURITY_CODE) {
-          setError(true);
+        if (state.value !== SECURITY_CODE) {
+          setState({
+            ...state,
+            loading: false,
+            error: true,
+          });
+        } else {
+          setState({
+            ...state,
+            loading: false,
+            error: false,
+          });
         }
-        setLoading(false);
       }, 3000);
     }
     console.log("finalizando useEffect");
-  }, [loading]);
+  }, [state.loading]);
 
   const onValueChange = (e) => {
-    setValue(e.target.value);
+    setState({ ...state, value: e.target.value });
   };
 
   return (
     <React.Fragment>
       <h2>Eliminar UseState</h2>
       <p>Escriba el codigo de seguridad para eliminar UseState</p>
-      {error && !loading && <p>Error: Codigo no valido</p>}
-      {loading && <p>Cargando...</p>}
+      {state.error && !state.loading && <p>Error: Codigo no valido</p>}
+      {state.loading && <p>Cargando...</p>}
 
       <input
         type="text"
         placeholder="Codigo de seguridad"
-        value={value}
+        value={state.value}
         onChange={onValueChange}
       />
-      <button onClick={() => setLoading(true)}>Confirmar</button>
+      <button onClick={() => setState({ ...state, loading: true })}>
+        Confirmar
+      </button>
     </React.Fragment>
   );
 }
